@@ -8,20 +8,12 @@ import (
 	"github.com/gobuffalo/buffalo/render"
 	"github.com/gobuffalo/flect"
 	"github.com/gobuffalo/helpers/hctx"
-	
+
 	"github.com/gobuffalo/packr/v2"
 )
 
-
-
-var renderEngine = render.New(render.Options{
-	HTMLLayout:   "admon.plush.html",
-	TemplatesBox: packr.New("app:templates", "./templates"),
-
-	//TODO: Need to find a way that this package has its own css files.
-	AssetsBox: packr.New("app:assets", "./assets"),
-
-	Helpers: render.Helpers{
+var (
+	Helpers = render.Helpers{
 		"resources": func() []*ResourceRegistry {
 			return resources
 		},
@@ -38,5 +30,15 @@ var renderEngine = render.New(render.Options{
 
 			return ""
 		},
-	},
-})
+	}
+
+	renderEngine = render.New(render.Options{
+		HTMLLayout:   "admon.plush.html",
+		TemplatesBox: packr.New("admin:templates", "./templates"),
+
+		//TODO: Need to find a way that this package has its own css files.
+		AssetsBox: packr.New("admin:assets", "./assets"),
+
+		Helpers: Helpers,
+	})
+)
