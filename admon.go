@@ -84,4 +84,6 @@ func MountTo(app *buffalo.App) {
 		r.PUT(fmt.Sprintf("/{%v_id}", ident.Singularize().Underscore().String()), res.Resource.update)
 		r.DELETE(fmt.Sprintf("/{%v_id}", ident.Singularize().Underscore().String()), res.Resource.destroy)
 	}
+
+	adminGroup.ServeFiles("/assets", assetsBox)
 }
