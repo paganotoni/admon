@@ -124,13 +124,13 @@ var _ = func() error {
 
 
 	func() {
-		b := packr.New("app:assets", "./assets")
+		b := packr.New("admin:assets", "./assets")
 		b.SetResolver("css/style.css", packr.Pointer{ForwardBox: gk, ForwardPath: "2913b9aebb66e13f9e71cbf547b4e76c"})
 		}()
 
 
 	func() {
-		b := packr.New("app:templates", "./templates")
+		b := packr.New("admin:templates", "./templates")
 		b.SetResolver("admon.plush.html", packr.Pointer{ForwardBox: gk, ForwardPath: "6611159a7e7f6a8bf5ba20c89d07716f"})
 		b.SetResolver("dashboard.html", packr.Pointer{ForwardBox: gk, ForwardPath: "208ad6a081e478ca1ba36886809bd813"})
 		b.SetResolver("partials/_flash.plush.html", packr.Pointer{ForwardBox: gk, ForwardPath: "9ed2073cb93890df9c0b641fcd40725d"})
