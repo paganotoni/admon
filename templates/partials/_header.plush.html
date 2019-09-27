@@ -1,0 +1,28 @@
+
+<div class="col-md-7">
+    <nav class="breadcumb-container" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <%= for (index, item) in breadcrumbItems { %>
+                <li class="breadcrumb-item">
+                    <%= if (index != len(breadcrumbItems)-1) { %>
+                        <a href="<%= item["path"] %>"><%= item["label"] %></a>
+                    <% } else { %>
+                        <%= item["label"] %>
+                    <% } %>
+                </li>    
+            <% } %>
+        </ol>
+    </nav>
+
+    <h2><%= title %></h2>
+</div>
+
+<div class="col-md-5">
+    <div class="float-right pt-3">
+        <%= for (_, action) in actions { %>
+            <%= linkTo(action["path"], action["options"]) { 
+                return action["label"]
+            } %>    
+        <% } %>
+    </div>
+</div>

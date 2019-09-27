@@ -1,0 +1,15 @@
+<%= contentFor("status-bar"){ %>
+  <%= partial("/partials/header.plush.html", {
+    title: "New "+ resource.TitleSingular,
+    actions: [],
+    breadcrumbItems: [
+      {label: "Admin", path: "#"},
+      {label: resource.TitlePlural, path: resource.Paths.List()},
+      {label: "New " + resource.TitleSingular , path: ""}
+    ]
+  }) %>
+<% } %>
+
+<%= formFor(element, {action: resource.Paths.Create(),  method: "POST"}) { %>
+  <%= partial("resource/form.html") %>
+<% } %>

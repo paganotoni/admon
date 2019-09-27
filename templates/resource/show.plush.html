@@ -1,0 +1,32 @@
+<%= contentFor("status-bar"){ %>
+  <%= partial("/partials/header.plush.html", {
+    title: "Show "+resource.TitleSingular,
+    actions: [
+      {label: "Back", path: resource.Paths.List(), options: {class: "btn btn-dark"}},
+      {label: "Edit", path: resource.Paths.Edit(element.ID), options: {class: "btn btn-outline-secondary"}},
+      {label: "Destroy", path: resource.Paths.Delete(element.ID), options: {class: "btn btn-outline-secondary", "data-method": "DELETE", "data-confirm": "Are you sure?"}}
+    ],
+    breadcrumbItems: [
+      {label: "Admin", path: "/admin"},
+      {label: resource.TitlePlural, path: resource.Paths.List()},
+      {label: "Show "+resource.TitleSingular, path: ""}
+    ]
+  }) %>
+<% } %>
+
+<%= for (index, field) in resource.Fielder.FormFields() { %>
+  <div class="field-group">
+    <label for="">
+      <%= resource.Fielder.LabelFor(field) %>
+    </label>
+    
+    <br>
+    
+    <%= if (index == 0) { %>
+        <a href="<%= resource.Paths.Show(element.ID) %>"><%= resource.Fielder.ValueFor(element, field) %></a>
+    <% } else {%>
+        <%= resource.Fielder.ValueFor(element, field) %>
+    <% } %>  
+    </div>
+<% } %>
+

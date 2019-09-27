@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand navbar-dark">
+    <a class="navbar-brand mr-4" href="/admin">
+        Mass HS Hockey
+        <small>(Admon)</small>
+    </a>
+
+    <ul class="navbar-nav">
+        <%= for (_, e) in resources() { %>
+            <li class="nav-item">
+                <a class="nav-link <%= addActiveClass(e) %>" href="<%= e.Resource.Paths.List() %>"><%= e.Resource.TitlePlural %></a>
+            </li>
+        <% } %>
+    </ul>
+
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="/logout">Antonio Pagano</a>
+        </li>
+    </ul>
+    
+</nav>

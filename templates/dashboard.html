@@ -1,0 +1,10 @@
+<%= contentFor("status-bar"){ %>
+    <%= partial("/partials/header.plush.html", {
+      title: "Dashboard",
+      actions: [],
+      breadcrumbItems: [
+        {label: "Admin", path: "/admin"},
+        {label: "Dashboard", path: "/admin"}
+      ]
+    }) %>
+  <% } %>

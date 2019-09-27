@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <title><%= contentOf("page-title"){ %>Mass HS Hockey<% } %></title>
+
+  <meta name="csrf-param" content="authenticity_token" />
+  <meta name="csrf-token" content="<%= authenticity_token %>" />
+  <link rel="icon" href="<%= assetPath("images/favicon.ico") %>">
+  <link rel="stylesheet" type="text/css" href="/assets/style.css">
+</head>
+
+<body>
+
+  <%= partial("partials/navbar.plush.html") %>
+
+  <div class="container-fluid">
+    <div class="row pl-md-2 pr-md-2 pt-3 status-bar pb-2">
+        <%= contentOf("status-bar"){ %><% } %>
+    </div>
+
+    <div class="row flex-xl-nowrap">
+      <main class="col-12 pb-md-5 pl-md-4 pr-md-4 main" role="main">
+          <%= partial("partials/flash.html") %>
+          
+          <div class="pt-4">
+            <%= yield %>
+          </div>
+      </main>
+    </div>
+  </div>
+
+</body>
+
+</html>

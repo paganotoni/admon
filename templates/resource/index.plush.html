@@ -1,0 +1,55 @@
+<% contentFor("status-bar"){ %>
+    <%= partial("/partials/header.plush.html", {
+        title: resource.TitlePlural,
+        actions: [
+            {label: "New "+resource.TitleSingular, path: resource.Paths.New(), options: {class: "btn btn-outline-primary float-right"}}
+        ],
+        breadcrumbItems: [
+            {label: "Admin", path: "/admin"},
+            {label: resource.TitlePlural, path: resource.Paths.List()}
+        ]
+    }) %>
+<% } %>
+
+<table class="table table-hover admin-table">
+    <thead>
+        <th></th>
+            <%= for (_, field) in resource.Fielder.TableFields() { %>
+                <th>
+                    <%= resource.Fielder.TableHeaderNameFor(field) %> 
+                </th>
+            <% } %>
+        <th></th>
+    </thead>
+    <tbody>
+        <%= for (_, element) in elements { %>
+            <tr>
+                <td>
+                    
+                </td>
+                <%= for (index, field) in resource.Fielder.TableFields() { %>
+                    <td>
+                        <%= if (index == 0) { %>
+                            <a href="<%= resource.Paths.Show(element.ID) %>">
+                                <%= resource.Fielder.ValueFor(element, field) %>
+                            </a>
+                        <% } else {%>
+                            <%= resource.Fielder.ValueFor(element, field) %>
+                        <% } %>
+                    </td>
+                <% } %>
+
+                <td>
+                    <div class="float-right">
+                        <%= linkTo(resource.Paths.Edit(element.ID), {class: "btn btn-outline-secondary btn-sm", body: "Edit"}) %>
+                        <%= linkTo(resource.Paths.Delete(element.ID), {class: "btn btn-outline-secondary btn-sm", body: "Delete", "data-method": "DELETE",  "data-confirm": "Are you sure?"}) %>
+                    </div>
+                </td>
+            </tr>
+        <% } %>
+    </tbody>
+</table>
+
+<div class="float-right">
+    <%= paginator(pagination) %>
+</div>

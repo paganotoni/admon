@@ -1,0 +1,9 @@
+<%= for (_, field) in resource.Fielder.FormFields() { %>
+    <%= resource.Fielder.FieldFor(element, field, f) %>
+<% } %>
+
+<div class="float-right">
+    <%= linkTo( resource.Paths.List(), {class: "btn btn-dark", "data-confirm": "Are you sure?", body: "Cancel"}) %>
+    <button class="btn btn-outline-primary" role="submit">Save</button>
+</div>
+
