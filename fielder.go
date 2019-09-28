@@ -7,7 +7,6 @@ import (
 	"github.com/gobuffalo/flect"
 	"github.com/gobuffalo/tags"
 	"github.com/gobuffalo/tags/form/bootstrap"
-	"github.com/paganotoni/admon/options"
 )
 
 type Fielder struct {
