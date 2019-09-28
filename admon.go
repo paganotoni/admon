@@ -10,7 +10,6 @@ import (
 	"github.com/gobuffalo/flect"
 	"github.com/gobuffalo/helpers/hctx"
 	"github.com/gobuffalo/packr/v2"
-	"github.com/paganotoni/admon/assets"
 )
 
 var (
@@ -106,7 +105,7 @@ func MountTo(app *buffalo.App) {
 		r.DELETE(fmt.Sprintf("/{%v_id}", ident.Singularize().Underscore().String()), res.Resource.destroy)
 	}
 
-	as := assets.NewAssetsServer(assetsBox, "/assets")
+	as := NewAssetsServer(assetsBox, "/assets")
 	as.AddHelpersTo(renderEngine)
 	as.MountTo(adminGroup)
 }

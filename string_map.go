@@ -1,5 +1,5 @@
 //® Gobuffalo - Copied here since the struct is private.
-package assets
+package admon
 
 import (
 	"sort"
