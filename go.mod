@@ -15,5 +15,6 @@ require (
 	github.com/golang/gddo v0.0.0-20190904175337-72a348e765d2
 	github.com/inconshreveable/log15 v0.0.0-20180818164646-67afb5ed74ec // indirect
 	github.com/pkg/errors v0.8.1
+	github.com/sirupsen/logrus v1.4.2
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )

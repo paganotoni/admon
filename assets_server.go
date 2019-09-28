@@ -9,6 +9,7 @@ import (
 	"github.com/gobuffalo/buffalo"
 	"github.com/gobuffalo/buffalo/render"
 	"github.com/gobuffalo/packd"
+	"github.com/sirupsen/logrus"
 )
 
 var (
@@ -43,6 +44,8 @@ func (ar *AssetsServer) MountTo(app *buffalo.App) {
 	routePrefix := ar.prefix
 	ar.prefix = filepath.ToSlash(filepath.Join(app.Prefix, ar.prefix))
 
+	logrus.Println(app.Prefix, routePrefix, ar.prefix)
+
 	app.ServeFiles(routePrefix, ar.box)
 }
 
@@ -61,6 +64,7 @@ func (ar *AssetsServer) pathFor(file string) string {
 	}
 
 	path := filepath.ToSlash(filepath.Join(ar.prefix, filePath))
+	logrus.Println(path)
 	return path
 }
 
