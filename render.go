@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	assetsBox    = packr.New("admon:assets", "./assets")
+	assetsBox    = packr.New("admon:assets", "./public/assets")
 	templatesBox = packr.New("admon:templates", "./templates")
 
 	helpers = render.Helpers{
