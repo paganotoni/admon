@@ -1,7 +1,5 @@
 package admon
 
-import "github.com/paganotoni/admon/options"
-
 var registry []*ResourceEntry
 
 type ResourceEntry struct {
