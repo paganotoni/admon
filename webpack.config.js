@@ -68,7 +68,7 @@ const configurator = {
     var config = {
       mode: env,
       entry: configurator.entries(),
-      output: {filename: "[name].[hash].js", path: `${__dirname}/web/public`},
+      output: {filename: "[name].[hash].js", path: `${__dirname}/web/public/assets`},
       plugins: configurator.plugins(),
       module: configurator.moduleOptions(),
       resolve: {
