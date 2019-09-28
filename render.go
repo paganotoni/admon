@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	assetsBox    = packr.New("admin:assets", "./assets")
-	templatesBox = packr.New("admin:templates", "./templates")
+	assetsBox    = packr.New("admon:assets", "./assets")
+	templatesBox = packr.New("admon:templates", "./templates")
 
 	helpers = render.Helpers{
 		"resources":      registry,

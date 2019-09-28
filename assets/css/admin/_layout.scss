@@ -1,0 +1,48 @@
+.navbar {
+    background: #24292e;
+    height: 4rem;
+    position: sticky;
+    top: 0;
+    z-index: 1071;
+}
+
+.page-header {
+    top: 4rem;
+    position: sticky;
+    z-index: 1000;
+    flex: 0 1 320px;
+}
+
+.status-bar {
+    background-color: #f6f8fa;
+}
+
+
+.bd-links {
+    max-height: calc(100vh - 6rem);
+    display: block !important;
+    overflow-y: auto;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin-right: -15px;
+    margin-left: -15px;
+}
+
+.sidebar nav {
+    li {
+        display: block;
+        width: 100%;
+        
+        a {
+            display: block;
+            width: 100%;
+            padding: 0.5rem;
+            padding-left: 1rem;
+        }
+    }
+
+    .block {
+        padding-top: 2rem; 
+    }
+    
+}

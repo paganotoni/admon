@@ -1,0 +1,23 @@
+.admin-table {
+    background-color: white;
+    border: 1px solid #dedede;
+
+    thead {
+        background-color: #f3f3f3;
+        
+        th {
+            padding: 20px 10px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+    }
+
+    tbody tr:hover {
+        background-color: rgb(233, 243, 255);
+    }
+
+    td {
+        vertical-align: middle;
+    }
+}
+
