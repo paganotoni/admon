@@ -2,47 +2,68 @@ package admon
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/fatih/structs"
 	"github.com/gobuffalo/buffalo"
+	"github.com/gobuffalo/buffalo/render"
 	"github.com/gobuffalo/flect"
+	"github.com/gobuffalo/helpers/hctx"
+	"github.com/gobuffalo/packr/v2"
+	"github.com/paganotoni/admon/assets"
 )
 
-// Prefix is the prefix of the group where the admin
-// resources will be mounted
-var Prefix = "/admin"
+var (
+	// Prefix is the prefix of the group where the admin
+	// resources will be mounted
+	Prefix = "/admin"
 
-// DateFormat that will be used for date fields and texts
-var DateFormat = "01-02-2006"
+	// DateFormat that will be used for date fields and texts
+	DateFormat = "01-02-2006"
 
-// resources holds resources that we will use for admin routes generation.
-var resources []*ResourceRegistry
+	assetsBox    = packr.New("admon:assets", "./web/public/assets")
+	templatesBox = packr.New("admon:templates", "./web/templates")
 
-type ResourceRegistry struct {
-	Model    interface{}
-	Resource Resource
-	Options  Options
-}
+	helpers = render.Helpers{
+		"resources": func() []*ResourceEntry {
+			return registry
+		},
+		"addActiveClass": func(entry *ResourceEntry, help hctx.HelperContext) string {
 
-func (reg *ResourceRegistry) WithOptions(opts Options) *ResourceRegistry {
-	reg.Options = opts
-	fieldr := NewFielder(reg.Model, opts)
-	reg.Resource = NewResource(reg.Model, fieldr)
-	return reg
-}
+			info := help.Value("current_route").(buffalo.RouteInfo)
+			ident := flect.New(structs.New(entry.Model).Name())
+			resourcePrefix := entry.Resource.Paths.Join(Prefix, ident.Pluralize().Underscore().String())
 
-// Register allows to add an admin resource with passed options for it.
-func Register(model interface{}) *ResourceRegistry {
-	fieldr := NewFielder(model, Options{})
-	resource := NewResource(model, fieldr)
-	registry := &ResourceRegistry{
-		Model:    model,
-		Resource: resource,
-		Options:  Options{},
+			if strings.HasPrefix(info.Path, resourcePrefix) {
+				return "active"
+			}
+
+			return ""
+		},
 	}
 
-	resources = append(resources, registry)
-	return registry
+	renderEngine = render.New(render.Options{
+		HTMLLayout:   "admon.plush.html",
+		TemplatesBox: templatesBox,
+
+		AssetsBox: assetsBox,
+		Helpers:   helpers,
+	})
+)
+
+// Register allows to add an admin resource with passed options for it.
+func Register(model interface{}) *ResourceEntry {
+	opts := Options{}
+	fieldr := NewFielder(model, opts)
+	resource := NewResource(model, fieldr)
+	entry := &ResourceEntry{
+		Model:    model,
+		Resource: resource,
+		Options:  opts,
+	}
+
+	registry = append(registry, entry)
+	return entry
 }
 
 // MountTo mounts the actual routes into the passed app, it will consider
@@ -57,7 +78,7 @@ func MountTo(app *buffalo.App) {
 		return c.Render(200, renderEngine.HTML("dashboard.html"))
 	})
 
-	for idx, res := range resources {
+	for idx, res := range registry {
 		ident := flect.New(structs.New(res.Model).Name())
 
 		base := res.Options.Path
@@ -71,7 +92,7 @@ func MountTo(app *buffalo.App) {
 		}
 
 		res.Resource.Paths = paths
-		resources[idx] = res
+		registry[idx] = res
 
 		//add the routes to the app.
 		r := adminGroup.Group(base)
@@ -85,5 +106,7 @@ func MountTo(app *buffalo.App) {
 		r.DELETE(fmt.Sprintf("/{%v_id}", ident.Singularize().Underscore().String()), res.Resource.destroy)
 	}
 
-	adminGroup.ServeFiles("/assets", assetsBox)
+	as := assets.NewAssetsServer(assetsBox, "/assets")
+	as.AddHelpersTo(renderEngine)
+	as.MountTo(adminGroup)
 }

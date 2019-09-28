@@ -10,11 +10,7 @@ const configurator = {
   entries: function(){
     var entries = {}
 
-    Glob.sync("./assets/*/*.*").forEach((entry) => {
-      if (entry === './assets/css/application.scss') {
-        return
-      }
-
+    Glob.sync("./web/assets/*/*.*").forEach((entry) => {
       let key = entry.replace(/(\.\/assets\/(src|js|css|go)\/)|\.(ts|js|s[ac]ss|go)/g, '')
       if(key.startsWith("_") || (/(ts|js|s[ac]ss|go)$/i).test(entry) == false) {
         return
@@ -34,7 +30,7 @@ const configurator = {
     var plugins = [
       new Webpack.ProvidePlugin({$: "jquery",jQuery: "jquery"}),
       new MiniCssExtractPlugin({filename: "[name].[contenthash].css"}),
-      new CopyWebpackPlugin([{from: "./assets",to: ""}], {copyUnmodified: true,ignore: ["css/**", "js/**", "src/**"] }),
+      new CopyWebpackPlugin([{from: "./web/assets",to: ""}], {copyUnmodified: true,ignore: ["css/**", "js/**", "src/**"] }),
       new Webpack.LoaderOptionsPlugin({minimize: true,debug: false}),
       new ManifestPlugin({fileName: "manifest.json"}),
       new CleanObsoleteChunks()
@@ -72,7 +68,7 @@ const configurator = {
     var config = {
       mode: env,
       entry: configurator.entries(),
-      output: {filename: "[name].[hash].js", path: `${__dirname}/public/assets`},
+      output: {filename: "[name].[hash].js", path: `${__dirname}/web/public/assets`},
       plugins: configurator.plugins(),
       module: configurator.moduleOptions(),
       resolve: {

@@ -7,6 +7,7 @@ import (
 	"github.com/gobuffalo/flect"
 	"github.com/gobuffalo/tags"
 	"github.com/gobuffalo/tags/form/bootstrap"
+	"github.com/paganotoni/admon/options"
 )
 
 type Fielder struct {
@@ -83,20 +84,20 @@ func (fr Fielder) TableFields() []*structs.Field {
 }
 
 func (fr Fielder) FieldFor(element interface{}, field *structs.Field, form *bootstrap.FormFor) *tags.Tag {
-	var options FieldOptions
+	var opts FieldOptions
 	for _, fo := range fr.fieldOptions {
 		if fo.Name != field.Name() {
 			continue
 		}
 
-		options = fo
+		opts = fo
 		break
 	}
 
-	switch options.Input.Type {
+	switch opts.Input.Type {
 	//TODO: add other types of fields
 	case InputTypeSelect:
-		return form.SelectTag(field.Name(), tags.Options{"options": options.Input.SelectOptions})
+		return form.SelectTag(field.Name(), tags.Options{"options": opts.Input.SelectOptions})
 	}
 
 	return form.InputTag(field.Name(), tags.Options{})
