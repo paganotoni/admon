@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"reflect"
 
+	"encoding/json"
+	"encoding/xml"
+
 	"net/http"
 
 	"github.com/fatih/structs"
@@ -11,6 +14,8 @@ import (
 	"github.com/gobuffalo/flect"
 	"github.com/gobuffalo/pop"
 	"github.com/pkg/errors"
+	
+	csv "github.com/gocarina/gocsv"
 )
 
 type Resource struct {
@@ -203,4 +208,32 @@ func (r Resource) destroy(c buffalo.Context) error {
 
 	c.Flash().Add("success", fmt.Sprintf("%v Deleted", r.TitlePlural))
 	return c.Redirect(http.StatusSeeOther, r.Paths.List())
+}
+
+func (r Resource) export(c buffalo.Context) error {
+
+	tx, ok := c.Value("tx").(*pop.Connection)
+	if !ok {
+		return fmt.Errorf("no transaction found")
+	}
+
+	elements := r.slice().Interface()
+	err := tx.All(elements)
+	if err != nil {
+		return err
+	}
+
+	data, _ := json.Marshal(elements)
+	format := c.Param("format")
+
+	switch format {
+	case "xml":
+		data, _ = xml.MarshalIndent(elements, "  ", "    ")
+	case "csv":
+		data, _ = csv.MarshalBytes(elements)
+	}
+
+	c.Response().Header().Set("Content-Disposition", fmt.Sprintf("attachment;filename=export.%v", format))
+	_, err = c.Response().Write(data)
+	return err
 }

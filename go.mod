@@ -12,9 +12,7 @@ require (
 	github.com/gobuffalo/packr/v2 v2.6.0
 	github.com/gobuffalo/pop v4.12.0+incompatible
 	github.com/gobuffalo/tags v2.1.1+incompatible
-	github.com/golang/gddo v0.0.0-20190904175337-72a348e765d2
-	github.com/inconshreveable/log15 v0.0.0-20180818164646-67afb5ed74ec // indirect
+	github.com/gocarina/gocsv v0.0.0-20190927101021-3ecffd272576
 	github.com/pkg/errors v0.8.1
-	github.com/sirupsen/logrus v1.4.2
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )

@@ -49,7 +49,14 @@
         <% } %>
     </tbody>
 </table>
-
+<div class="float-left">
+    <span class="small"> 
+        Export as 
+        <a href="<%= resource.Paths.Export("xml") %>">XML</a>
+        <a href="<%= resource.Paths.Export("csv") %>">CSV</a>
+        <a href="<%= resource.Paths.Export("json") %>">JSON</a>
+    </span>
+</div>
 <div class="float-right">
     <%= paginator(pagination) %>
 </div>

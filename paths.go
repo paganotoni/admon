@@ -39,6 +39,10 @@ func (a Paths) Delete(id interface{}) string {
 	return a.Join(a.Prefix, a.BasePath, fmt.Sprintf("%v", id))
 }
 
+func (a Paths) Export(format string) string {
+	return a.Join(a.Prefix, a.BasePath, fmt.Sprintf("export.%v", format))
+}
+
 func (a Paths) Join(paths ...string) string {
 	u, _ := url.Parse("/")
 	u.Path = path.Join(paths...)

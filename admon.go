@@ -99,6 +99,8 @@ func MountTo(app *buffalo.App) {
 		r.GET("/new", res.Resource.new)
 		r.POST("/", res.Resource.create)
 
+		r.GET("/export.{format}", res.Resource.export)
+
 		r.GET(fmt.Sprintf("/{%v_id}", ident.Singularize().Underscore().String()), res.Resource.show)
 		r.GET(fmt.Sprintf("/{%v_id}/edit", ident.Singularize().Underscore().String()), res.Resource.edit)
 		r.PUT(fmt.Sprintf("/{%v_id}", ident.Singularize().Underscore().String()), res.Resource.update)
