@@ -1,5 +1,11 @@
+
 <%= for (_, field) in resource.Fielder.FormFields() { %>
-    <%= resource.Fielder.FieldFor(element, field, f) %>
+    <div class="form-group row">
+        <label for="<%= field.Name() %>" class="col-sm-2 col-form-label"><%= field.Name() %></label>
+        <div class="col-sm-10">
+            <%= resource.Fielder.FieldFor(element, field, f) %>
+        </div>
+    </div>
 <% } %>
 
 <div class="float-right">
@@ -7,3 +13,4 @@
     <button class="btn btn-outline-primary" role="submit">Save</button>
 </div>
 
+   

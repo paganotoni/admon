@@ -118,7 +118,7 @@ func (fr Fielder) FieldFor(element interface{}, field *structs.Field, form *boot
 		return form.SelectTag(field.Name(), tags.Options{"options": opts.Input.SelectOptions})
 	}
 
-	return form.InputTag(field.Name(), tags.Options{})
+	return form.InputTag(field.Name(), tags.Options{"bootstrap": map[string]interface{}{"form-group-class": ""}, "hide_label": true})
 }
 
 func (fr Fielder) TableHeaderNameFor(field *structs.Field) string {
