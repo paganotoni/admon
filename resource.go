@@ -235,7 +235,7 @@ func (r Resource) export(c buffalo.Context) error {
 	}
 
 	elements := r.slice().Interface()
-	err := tx.All(elements)
+	err := tx.Order(r.sortOrderFrom(c)).All(elements)
 	if err != nil {
 		return err
 	}
