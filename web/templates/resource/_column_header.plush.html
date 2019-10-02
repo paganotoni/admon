@@ -1,0 +1,20 @@
+<span class="mr-2">
+    <%= resource.Fielder.TableHeaderNameFor(field) %> 
+</span>
+
+<% 
+    let sortClass = "" 
+    let sortOrder = "asc"
+
+    if (params["sortBy"] == field.Name()) { 
+        sortClass = "sort-up"    
+        sortOrder = "desc"
+
+        if (params["order"] == "desc") {
+            sortClass = "sort-down"
+            sortOrder = "asc"
+        }
+    } 
+%>
+
+<a class="sort-by <%= sortClass %>"href="<%= pathWith({sortBy: field.Name(), order: sortOrder}) %>"></a>
