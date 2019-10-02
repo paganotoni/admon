@@ -39,8 +39,20 @@ func (a Paths) Delete(id interface{}) string {
 	return a.Join(a.Prefix, a.BasePath, fmt.Sprintf("%v", id))
 }
 
-func (a Paths) Export(format string) string {
-	return a.Join(a.Prefix, a.BasePath, fmt.Sprintf("export.%v", format))
+func (a Paths) Export(format string, params map[string]string) string {
+	path := a.Join(a.Prefix, a.BasePath, fmt.Sprintf("export.%v", format))
+	parsed, err := url.Parse(path)
+	if err != nil {
+		return path
+	}
+
+	q := parsed.Query()
+	q.Set("sortBy", params["orderBy"])
+	q.Set("order", params["order"])
+	q.Set("term", params["term"])
+
+	parsed.RawQuery = q.Encode()
+	return parsed.String()
 }
 
 func (a Paths) Join(paths ...string) string {

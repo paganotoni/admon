@@ -69,9 +69,9 @@
 <div class="float-left">
     <span class="small"> 
         Total <%= pagination.TotalEntriesSize %> <%= resource.TitlePlural %> | Export as 
-        <a href="<%= resource.Paths.Export("xml") %>">XML</a>
-        <a href="<%= resource.Paths.Export("csv") %>">CSV</a>
-        <a href="<%= resource.Paths.Export("json") %>">JSON</a>
+        <a href="<%= resource.Paths.Export("xml", params) %>">XML</a>
+        <a href="<%= resource.Paths.Export("csv", params) %>">CSV</a>
+        <a href="<%= resource.Paths.Export("json", params) %>">JSON</a>
     </span>
 </div>
 <div class="float-right">
