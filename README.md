@@ -2,7 +2,8 @@
 
 Admon is an administration framework for Buffalo application. It aims to provide a way to generate admin portals for buffalo in an easy way. 
 
-![Admon Preview](https://user-images.githubusercontent.com/645522/65819179-2a96e700-e1df-11e9-96e7-b65656037de6.png)
+![Admon Preview](https://user-images.githubusercontent.com/645522/66008895-eaa15f80-e47d-11e9-840d-11cd0718f2ef.png)
+
 
 Amon is heavily inspired by [Active admin]("https://activeadmin.info").
 
