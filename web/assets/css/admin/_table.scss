@@ -19,5 +19,42 @@
     td {
         vertical-align: middle;
     }
+    
+    th a{ 
+        width: 100%;
+    }
+
+    th a.sort-by { 
+        padding-right: 18px;
+        position: relative;
+    }
+
+    a.sort-by:before,
+    a.sort-by:after {
+        border: 4px solid transparent;
+        content: "";
+        display: block;
+        height: 0;
+        right: 5px;
+        top: 50%;
+        position: absolute;
+        width: 0;
+    }
+    a.sort-by:before {
+        border-bottom-color: #666;
+        margin-top: -9px;
+    }
+    a.sort-by:after {
+        border-top-color: #666;
+        margin-top: 1px;
+    }
+    
+    a.sort-up:after {
+      display: none;
+    }
+    
+    a.sort-down:before {
+      display: none;
+    }
 }
 

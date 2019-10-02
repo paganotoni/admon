@@ -36,26 +36,22 @@
                     <span class="mr-2">
                         <%= resource.Fielder.TableHeaderNameFor(field) %> 
                     </span>
-                    <span>
-                        <% 
-                            let sortClass = "fa-sort" 
-                            let sortOrder = "asc"
+                    <% 
+                        let sortClass = "" 
+                        let sortOrder = "asc"
 
-                            if (params["sortBy"] == field.Name()) { 
-                                sortClass = "fa-sort-up"    
-                                sortOrder = "desc"
+                        if (params["sortBy"] == field.Name()) { 
+                            sortClass = "sort-up"    
+                            sortOrder = "desc"
 
-                                if (params["order"] == "desc") {
-                                    sortClass = "fa-sort-down"
-                                    sortOrder = "asc"
-                                }
-                            } 
-                        %>
+                            if (params["order"] == "desc") {
+                                sortClass = "sort-down"
+                                sortOrder = "asc"
+                            }
+                        } 
+                    %>
 
-                        <a href="<%= pathWith({sortBy: field.Name(), order: sortOrder}) %>">
-                            <i class="fa <%= sortClass %>"></i>
-                        </a>
-                    </span>
+                    <a class="sort-by <%= sortClass %>"href="<%= pathWith({sortBy: field.Name(), order: sortOrder}) %>"></a>
                 </th>
             <% } %>
         <th></th>
