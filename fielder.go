@@ -1,6 +1,7 @@
 package admon
 
 import (
+	"reflect"
 	"time"
 
 	"github.com/fatih/structs"
@@ -73,6 +74,24 @@ func (fr Fielder) TableFields() []*structs.Field {
 
 	for _, f := range fr.Fields {
 		if f.Name() == "ID" {
+			continue
+		}
+
+		result = append(result, f)
+	}
+
+	return result
+}
+
+func (fr Fielder) SearchableFields() []*structs.Field {
+	result := []*structs.Field{}
+
+	for _, f := range fr.Fields {
+		if f.Tag("db") == "-" || f.Tag("db") == "" {
+			continue
+		}
+
+		if f.Kind() != reflect.String {
 			continue
 		}
 

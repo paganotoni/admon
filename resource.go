@@ -3,6 +3,7 @@ package admon
 import (
 	"fmt"
 	"reflect"
+	"strings"
 
 	"encoding/json"
 	"encoding/xml"
@@ -63,6 +64,28 @@ func (r Resource) sortOrderFrom(c buffalo.Context) string {
 	return fmt.Sprintf("%v %v", field, order)
 }
 
+func (r Resource) searchScope(c buffalo.Context) pop.ScopeFunc {
+	fields := r.Fielder.SearchableFields()
+	term := c.Param("term")
+
+	return func(q *pop.Query) *pop.Query {
+
+		if term == "" {
+			return q
+		}
+
+		clause := []string{}
+		for _, field := range fields {
+			column := field.Tag("db")
+			clause = append(clause, fmt.Sprintf("%v LIKE '%%%v%%'", column, term))
+		}
+
+		q.Where(strings.Join(clause, " OR "))
+
+		return q
+	}
+}
+
 func (r Resource) element() reflect.Value {
 	return reflect.New(reflect.TypeOf(r.model))
 }
@@ -83,7 +106,7 @@ func (r Resource) list(c buffalo.Context) error {
 
 	q := tx.PaginateFromParams(c.Params())
 	elements := r.slice().Interface()
-	err := q.Order(r.sortOrderFrom(c)).All(elements)
+	err := q.Scope(r.searchScope(c)).Order(r.sortOrderFrom(c)).All(elements)
 	if err != nil {
 		return err
 	}
