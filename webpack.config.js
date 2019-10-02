@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ManifestPlugin = require("webpack-manifest-plugin");
 const CleanObsoleteChunks = require('webpack-clean-obsolete-chunks');
 const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const configurator = {
   entries: function(){
@@ -33,7 +34,8 @@ const configurator = {
       new CopyWebpackPlugin([{from: "./web/assets", to: ""}], {copyUnmodified: true,ignore: ["css/**", "js/**", "src/**"] }),
       new Webpack.LoaderOptionsPlugin({minimize: true,debug: false}),
       new ManifestPlugin({fileName: "manifest.json"}),
-      new CleanObsoleteChunks()
+      new CleanWebpackPlugin()
+      
     ];
 
     return plugins
@@ -84,10 +86,6 @@ const configurator = {
         compress: {}
       }
     })
-
-    config.optimization = {
-      minimizer: [uglifier]
-    }
 
     return config
   }

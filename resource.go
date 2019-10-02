@@ -14,7 +14,7 @@ import (
 	"github.com/gobuffalo/flect"
 	"github.com/gobuffalo/pop"
 	"github.com/pkg/errors"
-	
+
 	csv "github.com/gocarina/gocsv"
 )
 
@@ -46,6 +46,23 @@ func NewResource(model interface{}, fieldr Fielder) Resource {
 	}
 }
 
+func (r Resource) sortOrderFrom(c buffalo.Context) string {
+	field := c.Param("sortBy")
+	order := c.Param("order")
+
+	field = r.Fielder.ColumnNameFor(field)
+
+	if field == "" {
+		field = "created_at"
+	}
+
+	if order == "" {
+		order = "desc"
+	}
+
+	return fmt.Sprintf("%v %v", field, order)
+}
+
 func (r Resource) element() reflect.Value {
 	return reflect.New(reflect.TypeOf(r.model))
 }
@@ -66,7 +83,7 @@ func (r Resource) list(c buffalo.Context) error {
 
 	q := tx.PaginateFromParams(c.Params())
 	elements := r.slice().Interface()
-	err := q.All(elements)
+	err := q.Order(r.sortOrderFrom(c)).All(elements)
 	if err != nil {
 		return err
 	}

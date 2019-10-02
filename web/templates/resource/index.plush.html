@@ -11,12 +11,51 @@
     }) %>
 <% } %>
 
+<div class="row mb-3">
+    <div class="col"></div>
+    <div class="col">
+        <div class="float-right">
+            <!-- TODO: Implement this one -->
+            <form action="" method="GET">
+                <div class="input-group">
+                    <input type="text" name="search" class="form-control search" placeholder="Keywords">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="button-addon2">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <table class="table table-hover admin-table">
     <thead>
         <th></th>
             <%= for (_, field) in resource.Fielder.TableFields() { %>
                 <th>
-                    <%= resource.Fielder.TableHeaderNameFor(field) %> 
+                    <span class="mr-2">
+                        <%= resource.Fielder.TableHeaderNameFor(field) %> 
+                    </span>
+                    <span>
+                        <% 
+                            let sortClass = "fa-sort" 
+                            let sortOrder = "asc"
+
+                            if (params["sortBy"] == field.Name()) { 
+                                sortClass = "fa-sort-up"    
+                                sortOrder = "desc"
+
+                                if (params["order"] == "desc") {
+                                    sortClass = "fa-sort-down"
+                                    sortOrder = "asc"
+                                }
+                            } 
+                        %>
+
+                        <a href="<%= pathWith({sortBy: field.Name(), order: sortOrder}) %>">
+                            <i class="fa <%= sortClass %>"></i>
+                        </a>
+                    </span>
                 </th>
             <% } %>
         <th></th>
@@ -51,7 +90,7 @@
 </table>
 <div class="float-left">
     <span class="small"> 
-        Export as 
+        Total <%= pagination.TotalEntriesSize %> <%= resource.TitlePlural %> | Export as 
         <a href="<%= resource.Paths.Export("xml") %>">XML</a>
         <a href="<%= resource.Paths.Export("csv") %>">CSV</a>
         <a href="<%= resource.Paths.Export("json") %>">JSON</a>

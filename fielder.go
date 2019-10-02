@@ -106,6 +106,20 @@ func (fr Fielder) TableHeaderNameFor(field *structs.Field) string {
 	return flect.Humanize(field.Name())
 }
 
+func (fr Fielder) ColumnNameFor(fieldName string) string {
+
+	for _, f := range fr.Fields {
+		if f.Name() != fieldName {
+			continue
+		}
+
+		//TODO: handle cases like "-"
+		return f.Tag("db")
+	}
+
+	return ""
+}
+
 func (fr Fielder) LabelFor(field *structs.Field) string {
 	return flect.Humanize(field.Name())
 }

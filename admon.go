@@ -2,6 +2,8 @@ package admon
 
 import (
 	"fmt"
+	"html/template"
+	"net/http"
 	"strings"
 
 	"github.com/fatih/structs"
@@ -38,6 +40,20 @@ var (
 			}
 
 			return ""
+		},
+
+		"pathWith": func(params map[string]interface{}, help hctx.HelperContext) template.HTML {
+			request := help.Value("request").(*http.Request)
+			path := request.URL
+
+			q := path.Query()
+			for name, value := range params {
+				q.Set(name, fmt.Sprintf("%v", value))
+			}
+
+			path.RawQuery = q.Encode()
+
+			return template.HTML(path.String())
 		},
 	}
 
