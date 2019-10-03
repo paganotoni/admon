@@ -14,6 +14,5 @@ require (
 	github.com/gobuffalo/tags v2.1.1+incompatible
 	github.com/gocarina/gocsv v0.0.0-20190927101021-3ecffd272576
 	github.com/pkg/errors v0.8.1
-	github.com/sirupsen/logrus v1.4.2
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )

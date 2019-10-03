@@ -1,10 +1,16 @@
 package admon
 
-import "github.com/gobuffalo/tags"
+import (
+	"github.com/gobuffalo/pop"
+	"github.com/gobuffalo/tags"
+)
 
 const (
+	//InputTypeText is the text input
 	InputTypeText   = 1
 	InputTypeSelect = 2
+	InputCheckbox   = 3
+	InputRadio      = 4
 )
 
 //Options is the main struct for configuration on a particular admin resource.
@@ -16,14 +22,20 @@ type Options struct {
 }
 
 type FieldOptions struct {
-	Name     string
+	Name string
+	//Label that will be used in the table and in the form
+	Label string
+
 	Input    InputOptions
-	Renderer func(interface{}) *tags.Tag
+	Renderer func(interface{}, *pop.Connection) (*tags.Tag, error)
 }
 
 type FieldOptionsSet []FieldOptions
 
 type InputOptions struct {
-	Type          int
-	SelectOptions interface{}
+	//Type of the field that will be used
+	Type int
+
+	//SelectOptionsBuilder receives the database connection and creates the options
+	SelectOptionsBuilder func(tx *pop.Connection) (interface{}, error)
 }

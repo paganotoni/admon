@@ -5,16 +5,13 @@ import (
 	"time"
 
 	"github.com/fatih/structs"
-	"github.com/gobuffalo/flect"
-	"github.com/gobuffalo/pop/associations"
+	"github.com/gobuffalo/pop"
 	"github.com/gobuffalo/tags"
 	"github.com/gobuffalo/tags/form/bootstrap"
-	"github.com/sirupsen/logrus"
 )
 
 type Fielder struct {
-	Fields       []*structs.Field
-	associations associations.Associations
+	Fields []*structs.Field
 
 	fieldOptions FieldOptionsSet
 }
@@ -23,20 +20,13 @@ func NewFielder(model interface{}, opts Options) Fielder {
 	//TODO: handle options
 	reflected := structs.New(model)
 
-	//TODO: handle errors
-	assoc, err := associations.ForStruct(model)
-	if err != nil {
-		logrus.Error(err)
-	}
-
 	return Fielder{
 		Fields:       reflected.Fields(),
 		fieldOptions: opts.Fields,
-		associations: assoc,
 	}
 }
 
-func (fr Fielder) ValueFor(element interface{}, field *structs.Field) interface{} {
+func (fr Fielder) ValueFor(element interface{}, field *structs.Field, tx *pop.Connection) interface{} {
 
 	raw := structs.New(element).Field(field.Name()).Value()
 
@@ -46,9 +36,12 @@ func (fr Fielder) ValueFor(element interface{}, field *structs.Field) interface{
 	}
 
 	for _, vr := range fr.fieldOptions {
-		if vr.Name == field.Name() && vr.Renderer != nil {
-			return vr.Renderer(raw)
+		if vr.Name != field.Name() || vr.Renderer == nil {
+			continue
 		}
+
+		tag, _ := vr.Renderer(raw, tx)
+		return tag
 	}
 
 	return raw
@@ -112,7 +105,25 @@ func (fr Fielder) SearchableFields() []*structs.Field {
 	return result
 }
 
-func (fr Fielder) FieldFor(element interface{}, field *structs.Field, form *bootstrap.FormFor) *tags.Tag {
+func (fr Fielder) LabelFor(field *structs.Field) string {
+	label := field.Name()
+
+	for _, fo := range fr.fieldOptions {
+		if fo.Name != field.Name() {
+			continue
+		}
+
+		if fo.Label == "" {
+			break
+		}
+
+		label = fo.Label
+	}
+
+	return label
+}
+
+func (fr Fielder) FieldFor(element interface{}, field *structs.Field, form *bootstrap.FormFor, tx *pop.Connection) *tags.Tag {
 	var opts FieldOptions
 	for _, fo := range fr.fieldOptions {
 		if fo.Name != field.Name() {
@@ -126,14 +137,16 @@ func (fr Fielder) FieldFor(element interface{}, field *structs.Field, form *boot
 	switch opts.Input.Type {
 	//TODO: add other types of fields
 	case InputTypeSelect:
-		return form.SelectTag(field.Name(), tags.Options{"options": opts.Input.SelectOptions, "hide_label": true})
+		//TODO: handle errors
+		options, _ := opts.Input.SelectOptionsBuilder(tx)
+		return form.SelectTag(field.Name(), tags.Options{"options": options, "hide_label": true})
 	}
 
 	return form.InputTag(field.Name(), tags.Options{"bootstrap": map[string]interface{}{"form-group-class": ""}, "hide_label": true})
 }
 
 func (fr Fielder) TableHeaderNameFor(field *structs.Field) string {
-	return flect.Humanize(field.Name())
+	return fr.LabelFor(field)
 }
 
 func (fr Fielder) ColumnNameFor(fieldName string) string {
@@ -148,8 +161,4 @@ func (fr Fielder) ColumnNameFor(fieldName string) string {
 	}
 
 	return ""
-}
-
-func (fr Fielder) LabelFor(field *structs.Field) string {
-	return flect.Humanize(field.Name())
 }

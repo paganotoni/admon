@@ -23,9 +23,9 @@
     <br>
     
     <%= if (index == 0) { %>
-        <a href="<%= resource.Paths.Show(element.ID) %>"><%= resource.Fielder.ValueFor(element, field) %></a>
+        <a href="<%= resource.Paths.Show(element.ID) %>"><%= resource.Fielder.ValueFor(element, field, tx) %></a>
     <% } else {%>
-        <%= resource.Fielder.ValueFor(element, field) %>
+        <%= resource.Fielder.ValueFor(element, field, tx) %>
     <% } %>  
     </div>
 <% } %>
