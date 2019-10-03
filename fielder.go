@@ -6,12 +6,15 @@ import (
 
 	"github.com/fatih/structs"
 	"github.com/gobuffalo/flect"
+	"github.com/gobuffalo/pop/associations"
 	"github.com/gobuffalo/tags"
 	"github.com/gobuffalo/tags/form/bootstrap"
+	"github.com/sirupsen/logrus"
 )
 
 type Fielder struct {
-	Fields []*structs.Field
+	Fields       []*structs.Field
+	associations associations.Associations
 
 	fieldOptions FieldOptionsSet
 }
@@ -20,13 +23,21 @@ func NewFielder(model interface{}, opts Options) Fielder {
 	//TODO: handle options
 	reflected := structs.New(model)
 
+	//TODO: handle errors
+	assoc, err := associations.ForStruct(model)
+	if err != nil {
+		logrus.Error(err)
+	}
+
 	return Fielder{
 		Fields:       reflected.Fields(),
 		fieldOptions: opts.Fields,
+		associations: assoc,
 	}
 }
 
 func (fr Fielder) ValueFor(element interface{}, field *structs.Field) interface{} {
+
 	raw := structs.New(element).Field(field.Name()).Value()
 
 	switch v := raw.(type) {
@@ -115,7 +126,7 @@ func (fr Fielder) FieldFor(element interface{}, field *structs.Field, form *boot
 	switch opts.Input.Type {
 	//TODO: add other types of fields
 	case InputTypeSelect:
-		return form.SelectTag(field.Name(), tags.Options{"options": opts.Input.SelectOptions})
+		return form.SelectTag(field.Name(), tags.Options{"options": opts.Input.SelectOptions, "hide_label": true})
 	}
 
 	return form.InputTag(field.Name(), tags.Options{"bootstrap": map[string]interface{}{"form-group-class": ""}, "hide_label": true})
