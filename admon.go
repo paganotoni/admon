@@ -22,6 +22,11 @@ var (
 	// DateFormat that will be used for date fields and texts
 	DateFormat = "01-02-2006"
 
+	// DefaultLabels allow to define labels for repeated fields like
+	// ID, CreatedAt and UpdatedAt. This can be overriden if field
+	// level label is defined.
+	DefaultLabels = map[string]string{}
+
 	assetsBox    = packr.New("admon:assets", "./web/public/assets")
 	templatesBox = packr.New("admon:templates", "./web/templates")
 

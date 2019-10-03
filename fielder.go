@@ -106,7 +106,10 @@ func (fr Fielder) SearchableFields() []*structs.Field {
 }
 
 func (fr Fielder) LabelFor(field *structs.Field) string {
-	label := field.Name()
+	label := DefaultLabels[field.Name()]
+	if label == "" {
+		label = field.Name()
+	}
 
 	for _, fo := range fr.fieldOptions {
 		if fo.Name != field.Name() {
