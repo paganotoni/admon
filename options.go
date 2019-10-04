@@ -7,10 +7,12 @@ import (
 
 const (
 	//InputTypeText is the text input
-	InputTypeText   = 1
-	InputTypeSelect = 2
-	InputCheckbox   = 3
-	InputRadio      = 4
+	InputTypeText     = 1
+	InputTypeSelect   = 2
+	InputTypeTextarea = 3
+
+	InputTypeCheckbox    = 4
+	InputTypeRadioButton = 5
 )
 
 //Options is the main struct for configuration on a particular admin resource.

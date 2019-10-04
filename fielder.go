@@ -158,9 +158,11 @@ func (fr Fielder) FieldFor(element interface{}, field *structs.Field, form *boot
 
 	switch opts.Input.Type {
 	//TODO: add other types of fields
+	case InputTypeTextarea:
+		tag = form.TextArea(field.Name(), tags.Options{"options": options, "hide_label": true})
 	case InputTypeSelect:
 		//TODO: handle errors
-		options, _ := opts.Input.SelectOptionsBuilder(tx)
+		options, _ := opts.Input.SelectOptionsBuilder(tx) // TODO: Handle here null.
 		tag = form.SelectTag(field.Name(), tags.Options{"options": options, "hide_label": true})
 	}
 
