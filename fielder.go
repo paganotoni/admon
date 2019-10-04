@@ -66,6 +66,10 @@ func (fr Fielder) TableFields() []*structs.Field {
 	result := []*structs.Field{}
 
 	for _, tc := range fr.fieldOptions {
+		if tc.OnlyForm {
+			continue
+		}
+
 		for _, f := range fr.Fields {
 			if f.Name() == tc.Name {
 				result = append(result, f)

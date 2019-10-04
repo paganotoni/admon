@@ -24,9 +24,14 @@ type Options struct {
 }
 
 type FieldOptions struct {
+	// Name of the field we're defining config. This is the way we know which
+	// one is being configured. This is the same value at the struct level.
 	Name string
-	//Label that will be used in the table and in the form
+	// Label that will be used in the table and in the form
 	Label string
+
+	// OnlyForm
+	OnlyForm bool
 
 	Input    InputOptions
 	Renderer func(interface{}, *pop.Connection) (*tags.Tag, error)
