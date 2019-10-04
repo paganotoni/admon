@@ -2,6 +2,7 @@ package admon
 
 import (
 	"reflect"
+	"strings"
 	"time"
 
 	"github.com/fatih/structs"
@@ -96,6 +97,21 @@ func (fr Fielder) SearchableFields() []*structs.Field {
 		}
 
 		if f.Kind() != reflect.String {
+			continue
+		}
+
+		result = append(result, f)
+	}
+
+	return result
+}
+
+func (fr Fielder) SummaryFields() []*structs.Field {
+	result := []*structs.Field{}
+	fields := strings.Join([]string{"ID", "CreatedAt", "UpdatedAt"}, "|")
+
+	for _, f := range fr.Fields {
+		if !strings.Contains(fields, f.Name()) {
 			continue
 		}
 

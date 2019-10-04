@@ -13,20 +13,27 @@
     ]
   }) %>
 <% } %>
-
-<%= for (index, field) in resource.Fielder.FormFields() { %>
-  <div class="field-group">
-    <label for="">
-      <%= resource.Fielder.LabelFor(field) %>
-    </label>
-    
-    <br>
-    
-    <%= if (index == 0) { %>
-        <a href="<%= resource.Paths.Show(element.ID) %>"><%= resource.Fielder.ValueFor(element, field, tx) %></a>
-    <% } else {%>
-        <%= resource.Fielder.ValueFor(element, field, tx) %>
-    <% } %>  
-    </div>
-<% } %>
-
+<div class="row">
+  <div class="col-9">
+      <%= for (index, field) in resource.Fielder.FormFields() { %>
+        <div class="field-group">
+          <label for="">
+            <%= resource.Fielder.LabelFor(field) %>
+          </label>
+          
+          <br>
+          
+          <%= if (index == 0) { %>
+              <a href="<%= resource.Paths.Show(element.ID) %>">
+                <%= resource.Fielder.ValueFor(element, field, tx) %>
+              </a>
+          <% } else {%>
+              <%= resource.Fielder.ValueFor(element, field, tx) %>
+          <% } %>  
+          </div>
+      <% } %>    
+  </div>
+  <div class="col-3">
+    <%= partial("resource/summary.plush.html") %>
+  </div>
+</div>

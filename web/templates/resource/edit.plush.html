@@ -13,21 +13,10 @@
 <%= formFor(element, {action: resource.Paths.Update(element.ID), method: "PUT"}) { %>
   <div class="row"> 
     <div class="col-9">
-      <%= partial("resource/form.html") %>
+      <%= partial("resource/form.plush.html") %>
     </div>
     <div class="col-3">
-        <div class="card">
-            <div class="card-body">
-                <label><%= resource.TitleSingular %> ID</label>
-                <p><%= element.ID %></p>
-
-                <label>Created</label>
-                <p><%= element.CreatedAt.Format("Jan 2, 2006 15:04") %></p>
-
-                <label>Last Updated On</label>
-                <p><%= element.UpdatedAt.Format("Jan 2, 2006 15:04") %></p>    
-            </div>
-        </div>
+        <%= partial("resource/summary.plush.html") %>
     </div>
   </div>
 <% } %>

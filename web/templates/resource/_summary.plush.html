@@ -1,0 +1,8 @@
+<div class="card">
+    <div class="card-body">
+        <%= for (_, field) in resource.Fielder.SummaryFields() { %>
+            <label><%= resource.Fielder.LabelFor(field) %></label>
+            <p><%= resource.Fielder.ValueFor(element, field, tx) %></p>
+        <% } %>
+    </div>
+</div>
