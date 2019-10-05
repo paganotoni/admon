@@ -2,9 +2,9 @@
     <a class="navbar-brand mr-4" href="/admin">Admon</a>
 
     <ul class="navbar-nav">
-        <%= for (_, e) in resources() { %>
+        <%= for (_, e) in resources { %>
             <li class="nav-item">
-                <a class="nav-link <%= addActiveClass(e) %>" href="<%= e.Resource.Paths.List() %>"><%= e.Resource.TitlePlural %></a>
+                <a class="nav-link <%= addActiveClass(e) %>" href="<%= e.Paths.List() %>"><%= e.TitlePlural %></a>
             </li>
         <% } %>
     </ul>

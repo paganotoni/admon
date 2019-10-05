@@ -26,17 +26,17 @@ type Resource struct {
 	TitlePlural   string
 	TitleSingular string
 
-	Fielder Fielder
+	Options ResourceOptions
 
-	//Paths is the route helpers that will be injected when
-	//Mount gets called
-	Paths Paths
+	Fielder Fielder
+	Paths   Paths
+	Portal  *Portal
 }
 
-func NewResource(model interface{}, fieldr Fielder) Resource {
+func NewResource(model interface{}, fieldr Fielder) *Resource {
 	ident := flect.New(structs.New(model).Name())
 
-	return Resource{
+	return &Resource{
 		model: model,
 
 		ParamKey:      ident.Singularize().Underscore().String() + "_id",
@@ -47,7 +47,20 @@ func NewResource(model interface{}, fieldr Fielder) Resource {
 	}
 }
 
-func (r Resource) sortOrderFrom(c buffalo.Context) string {
+func (r *Resource) WithOptions(opts ResourceOptions) *Resource {
+	r.Options = opts
+	r.Fielder = NewFielder(r.model, opts.Fields)
+	return r
+}
+
+func (r *Resource) IsRelatedWith(routeInfo buffalo.RouteInfo) bool {
+	ident := flect.New(structs.New(r.model).Name())
+	resourcePrefix := r.Paths.Join(r.Portal.options.Prefix, ident.Pluralize().Underscore().String())
+
+	return strings.HasPrefix(routeInfo.Path, resourcePrefix)
+}
+
+func (r *Resource) sortOrderFrom(c buffalo.Context) string {
 	field := c.Param("sortBy")
 	order := c.Param("order")
 
@@ -64,7 +77,7 @@ func (r Resource) sortOrderFrom(c buffalo.Context) string {
 	return fmt.Sprintf("%v %v", field, order)
 }
 
-func (r Resource) searchScope(c buffalo.Context) pop.ScopeFunc {
+func (r *Resource) searchScope(c buffalo.Context) pop.ScopeFunc {
 	fields := r.Fielder.SearchableFields()
 	term := c.Param("term")
 
@@ -86,19 +99,19 @@ func (r Resource) searchScope(c buffalo.Context) pop.ScopeFunc {
 	}
 }
 
-func (r Resource) element() reflect.Value {
+func (r *Resource) element() reflect.Value {
 	return reflect.New(reflect.TypeOf(r.model))
 }
 
-func (r Resource) slice() reflect.Value {
+func (r *Resource) slice() reflect.Value {
 	return reflect.New(reflect.SliceOf(reflect.TypeOf(r.model)))
 }
 
-func (r Resource) identifierFor(element interface{}) interface{} {
+func (r *Resource) identifierFor(element interface{}) interface{} {
 	return structs.New(element).Field("ID").Value()
 }
 
-func (r Resource) list(c buffalo.Context) error {
+func (r *Resource) list(c buffalo.Context) error {
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok {
 		return fmt.Errorf("no transaction found")
@@ -118,7 +131,7 @@ func (r Resource) list(c buffalo.Context) error {
 	return c.Render(200, renderEngine.HTML("resource/index.plush.html"))
 }
 
-func (r Resource) show(c buffalo.Context) error {
+func (r *Resource) show(c buffalo.Context) error {
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok {
 		return fmt.Errorf("no transaction found")
@@ -137,7 +150,7 @@ func (r Resource) show(c buffalo.Context) error {
 	return c.Render(200, renderEngine.HTML("resource/show.plush.html"))
 }
 
-func (r Resource) new(c buffalo.Context) error {
+func (r *Resource) new(c buffalo.Context) error {
 
 	c.Set("resource", r)
 	c.Set("element", r.element().Interface())
@@ -145,7 +158,7 @@ func (r Resource) new(c buffalo.Context) error {
 	return c.Render(200, renderEngine.HTML("resource/new.plush.html"))
 }
 
-func (r Resource) create(c buffalo.Context) error {
+func (r *Resource) create(c buffalo.Context) error {
 
 	element := r.element().Interface()
 	if err := c.Bind(&element); err != nil {
@@ -177,7 +190,7 @@ func (r Resource) create(c buffalo.Context) error {
 	return c.Redirect(http.StatusSeeOther, r.Paths.Show(r.identifierFor(element)))
 }
 
-func (r Resource) edit(c buffalo.Context) error {
+func (r *Resource) edit(c buffalo.Context) error {
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok {
 		return fmt.Errorf("no transaction found")
@@ -194,7 +207,7 @@ func (r Resource) edit(c buffalo.Context) error {
 	return c.Render(200, renderEngine.HTML("resource/edit.plush.html"))
 }
 
-func (r Resource) update(c buffalo.Context) error {
+func (r *Resource) update(c buffalo.Context) error {
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok {
 		return fmt.Errorf("no transaction found")
@@ -229,7 +242,7 @@ func (r Resource) update(c buffalo.Context) error {
 	return c.Redirect(http.StatusSeeOther, r.Paths.Show(r.identifierFor(element)))
 }
 
-func (r Resource) destroy(c buffalo.Context) error {
+func (r *Resource) destroy(c buffalo.Context) error {
 
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok {
@@ -250,7 +263,7 @@ func (r Resource) destroy(c buffalo.Context) error {
 	return c.Redirect(http.StatusSeeOther, r.Paths.List())
 }
 
-func (r Resource) export(c buffalo.Context) error {
+func (r *Resource) export(c buffalo.Context) error {
 
 	tx, ok := c.Value("tx").(*pop.Connection)
 	if !ok {

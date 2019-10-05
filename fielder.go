@@ -12,18 +12,18 @@ import (
 )
 
 type Fielder struct {
-	Fields []*structs.Field
+	portal *Portal
 
+	Fields       []*structs.Field
 	fieldOptions FieldOptionsSet
 }
 
-func NewFielder(model interface{}, opts Options) Fielder {
-	//TODO: handle options
+func NewFielder(model interface{}, opts FieldOptionsSet) Fielder {
 	reflected := structs.New(model)
 
 	return Fielder{
 		Fields:       reflected.Fields(),
-		fieldOptions: opts.Fields,
+		fieldOptions: opts,
 	}
 }
 
@@ -33,7 +33,7 @@ func (fr Fielder) ValueFor(element interface{}, field *structs.Field, tx *pop.Co
 
 	switch v := raw.(type) {
 	case time.Time:
-		return v.Format(DateFormat)
+		return v.Format(fr.portal.options.DateFormat)
 	}
 
 	for _, vr := range fr.fieldOptions {

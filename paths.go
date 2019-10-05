@@ -9,6 +9,9 @@ import (
 type Paths struct {
 	Prefix   string
 	BasePath string
+
+	model  interface{}
+	portal *Portal
 }
 
 func (a Paths) List() string {

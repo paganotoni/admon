@@ -15,8 +15,13 @@ const (
 	InputTypeRadioButton = 5
 )
 
-//Options is the main struct for configuration on a particular admin resource.
 type Options struct {
+	Prefix     string
+	DateFormat string
+}
+
+//ResouceOptions ...
+type ResourceOptions struct {
 	//Path is the path prefix used for the routes under this resource.
 	Path string
 	//Fields allows customization for the fields that will be shown in the resource UI.
