@@ -31,10 +31,13 @@ The following example shows a bit more of how to customize Admon list table and 
 ```go
 // You can predefine common field labels based on the field name. 
 // These would be overridden by field-specific configuration.
-admon.DefaultLabels["CreatedAt"] = "Created On"
-admon.DefaultLabels["UpdatedAt"] = "Last Updated"
+portal := admon.NewPortal(admon.Options{
+    Prefix:     "/admin",
+    DateFormat: "01/02/2006 15:04",
+})
+
     
-admon.Register(models.Team{}).WithOptions(admon.Options{
+portal.Resource(models.Team{}).WithOptions(admon.Options{
     Fields: admon.FieldOptionsSet{
         {Name: "Name"}, //Selecting specific columns and order.
         {Name: "ShortName"},
@@ -70,7 +73,7 @@ admon.Register(models.Team{}).WithOptions(admon.Options{
 
 ### ⚠️ Important
 
-Admon is still under heavily development and still not production ready.
+Admon is still under heavily development and still not production ready. Try and use tagged versions instead of using master.
 
 
 
