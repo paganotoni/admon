@@ -3,7 +3,6 @@ package admon
 import (
 	"encoding/json"
 	"html/template"
-	"os"
 	"path/filepath"
 
 	"github.com/gobuffalo/buffalo"
@@ -65,7 +64,7 @@ func (ar *AssetsServer) pathFor(file string) string {
 }
 
 func (ar *AssetsServer) loadManifest() error {
-	if len(ar.registry.Keys()) > 0 || os.Getenv("GO_ENV") == "production" {
+	if len(ar.registry.Keys()) > 0 {
 		return nil
 	}
 
