@@ -1,192 +1,181 @@
 package admon
 
-import (
-	"reflect"
-	"strings"
-	"time"
+// type Fielder struct {
+// 	portal *Portal
 
-	"github.com/fatih/structs"
-	"github.com/gobuffalo/pop"
-	"github.com/gobuffalo/tags"
-	"github.com/gobuffalo/tags/form/bootstrap"
-)
+// 	Fields       []*structs.Field
+// 	fieldOptions FieldOptionsSet
+// }
 
-type Fielder struct {
-	portal *Portal
+// func NewFielder(model interface{}, opts FieldOptionsSet) Fielder {
+// 	reflected := structs.New(model)
 
-	Fields       []*structs.Field
-	fieldOptions FieldOptionsSet
-}
+// 	return Fielder{
+// 		Fields:       reflected.Fields(),
+// 		fieldOptions: opts,
+// 	}
+// }
 
-func NewFielder(model interface{}, opts FieldOptionsSet) Fielder {
-	reflected := structs.New(model)
+// func (fr Fielder) ValueFor(element interface{}, field *structs.Field, tx *pop.Connection) interface{} {
 
-	return Fielder{
-		Fields:       reflected.Fields(),
-		fieldOptions: opts,
-	}
-}
+// 	raw := structs.New(element).Field(field.Name()).Value()
 
-func (fr Fielder) ValueFor(element interface{}, field *structs.Field, tx *pop.Connection) interface{} {
+// 	switch v := raw.(type) {
+// 	case time.Time:
+// 		return v.Format(fr.portal.options.DateFormat)
+// 	}
 
-	raw := structs.New(element).Field(field.Name()).Value()
+// 	for _, vr := range fr.fieldOptions {
+// 		if vr.Name != field.Name() || vr.Renderer == nil {
+// 			continue
+// 		}
 
-	switch v := raw.(type) {
-	case time.Time:
-		return v.Format(fr.portal.options.DateFormat)
-	}
+// 		tag, _ := vr.Renderer(raw, tx)
+// 		return tag
+// 	}
 
-	for _, vr := range fr.fieldOptions {
-		if vr.Name != field.Name() || vr.Renderer == nil {
-			continue
-		}
+// 	return raw
+// }
 
-		tag, _ := vr.Renderer(raw, tx)
-		return tag
-	}
+// func (fr Fielder) FormFields() []*structs.Field {
+// 	result := []*structs.Field{}
+// 	for _, f := range fr.Fields {
+// 		//TODO: allow this to be customizable
+// 		if f.Name() == "CreatedAt" || f.Name() == "UpdatedAt" || f.Name() == "ID" {
+// 			continue
+// 		}
 
-	return raw
-}
+// 		result = append(result, f)
+// 	}
 
-func (fr Fielder) FormFields() []*structs.Field {
-	result := []*structs.Field{}
-	for _, f := range fr.Fields {
-		//TODO: allow this to be customizable
-		if f.Name() == "CreatedAt" || f.Name() == "UpdatedAt" || f.Name() == "ID" {
-			continue
-		}
+// 	return result
+// }
 
-		result = append(result, f)
-	}
+// func (fr Fielder) TableFields() []*structs.Field {
+// 	result := []*structs.Field{}
 
-	return result
-}
+// 	for _, tc := range fr.fieldOptions {
+// 		if tc.OnlyForm {
+// 			continue
+// 		}
 
-func (fr Fielder) TableFields() []*structs.Field {
-	result := []*structs.Field{}
+// 		for _, f := range fr.Fields {
+// 			if f.Name() == tc.Name {
+// 				result = append(result, f)
+// 			}
+// 		}
+// 	}
 
-	for _, tc := range fr.fieldOptions {
-		if tc.OnlyForm {
-			continue
-		}
+// 	if len(result) > 0 {
+// 		return result
+// 	}
 
-		for _, f := range fr.Fields {
-			if f.Name() == tc.Name {
-				result = append(result, f)
-			}
-		}
-	}
+// 	for _, f := range fr.Fields {
+// 		if f.Name() == "ID" {
+// 			continue
+// 		}
 
-	if len(result) > 0 {
-		return result
-	}
+// 		result = append(result, f)
+// 	}
 
-	for _, f := range fr.Fields {
-		if f.Name() == "ID" {
-			continue
-		}
+// 	return result
+// }
 
-		result = append(result, f)
-	}
+// func (fr Fielder) SearchableFields() []*structs.Field {
+// 	result := []*structs.Field{}
 
-	return result
-}
+// 	for _, f := range fr.Fields {
+// 		if f.Tag("db") == "-" || f.Tag("db") == "" {
+// 			continue
+// 		}
 
-func (fr Fielder) SearchableFields() []*structs.Field {
-	result := []*structs.Field{}
+// 		if f.Kind() != reflect.String {
+// 			continue
+// 		}
 
-	for _, f := range fr.Fields {
-		if f.Tag("db") == "-" || f.Tag("db") == "" {
-			continue
-		}
+// 		result = append(result, f)
+// 	}
 
-		if f.Kind() != reflect.String {
-			continue
-		}
+// 	return result
+// }
 
-		result = append(result, f)
-	}
+// func (fr Fielder) SummaryFields() []*structs.Field {
+// 	result := []*structs.Field{}
+// 	fields := strings.Join([]string{"ID", "CreatedAt", "UpdatedAt"}, "|")
 
-	return result
-}
+// 	for _, f := range fr.Fields {
+// 		if !strings.Contains(fields, f.Name()) {
+// 			continue
+// 		}
 
-func (fr Fielder) SummaryFields() []*structs.Field {
-	result := []*structs.Field{}
-	fields := strings.Join([]string{"ID", "CreatedAt", "UpdatedAt"}, "|")
+// 		result = append(result, f)
+// 	}
 
-	for _, f := range fr.Fields {
-		if !strings.Contains(fields, f.Name()) {
-			continue
-		}
+// 	return result
+// }
 
-		result = append(result, f)
-	}
+// func (fr Fielder) LabelFor(field *structs.Field) string {
+// 	label := DefaultLabels[field.Name()]
+// 	if label == "" {
+// 		label = field.Name()
+// 	}
 
-	return result
-}
+// 	for _, fo := range fr.fieldOptions {
+// 		if fo.Name != field.Name() {
+// 			continue
+// 		}
 
-func (fr Fielder) LabelFor(field *structs.Field) string {
-	label := DefaultLabels[field.Name()]
-	if label == "" {
-		label = field.Name()
-	}
+// 		if fo.Label == "" {
+// 			break
+// 		}
 
-	for _, fo := range fr.fieldOptions {
-		if fo.Name != field.Name() {
-			continue
-		}
+// 		label = fo.Label
+// 	}
 
-		if fo.Label == "" {
-			break
-		}
+// 	return label
+// }
 
-		label = fo.Label
-	}
+// func (fr Fielder) FieldFor(element interface{}, field *structs.Field, form *bootstrap.FormFor, tx *pop.Connection) *tags.Tag {
+// 	var opts FieldOptions
+// 	for _, fo := range fr.fieldOptions {
+// 		if fo.Name != field.Name() {
+// 			continue
+// 		}
 
-	return label
-}
+// 		opts = fo
+// 		break
+// 	}
 
-func (fr Fielder) FieldFor(element interface{}, field *structs.Field, form *bootstrap.FormFor, tx *pop.Connection) *tags.Tag {
-	var opts FieldOptions
-	for _, fo := range fr.fieldOptions {
-		if fo.Name != field.Name() {
-			continue
-		}
+// 	options := tags.Options{"bootstrap": map[string]interface{}{"form-group-class": ""}, "hide_label": true}
+// 	tag := form.InputTag(field.Name(), options)
 
-		opts = fo
-		break
-	}
+// 	switch opts.Input.Type {
+// 	//TODO: add other types of fields
+// 	case InputTypeTextarea:
+// 		tag = form.TextArea(field.Name(), tags.Options{"options": options, "hide_label": true})
+// 	case InputTypeSelect:
+// 		//TODO: handle errors
+// 		options, _ := opts.Input.SelectOptionsBuilder(tx) // TODO: Handle here null.
+// 		tag = form.SelectTag(field.Name(), tags.Options{"options": options, "hide_label": true})
+// 	}
 
-	options := tags.Options{"bootstrap": map[string]interface{}{"form-group-class": ""}, "hide_label": true}
-	tag := form.InputTag(field.Name(), options)
+// 	return tag
+// }
 
-	switch opts.Input.Type {
-	//TODO: add other types of fields
-	case InputTypeTextarea:
-		tag = form.TextArea(field.Name(), tags.Options{"options": options, "hide_label": true})
-	case InputTypeSelect:
-		//TODO: handle errors
-		options, _ := opts.Input.SelectOptionsBuilder(tx) // TODO: Handle here null.
-		tag = form.SelectTag(field.Name(), tags.Options{"options": options, "hide_label": true})
-	}
+// func (fr Fielder) TableHeaderNameFor(field *structs.Field) string {
+// 	return fr.LabelFor(field)
+// }
 
-	return tag
-}
+// func (fr Fielder) ColumnNameFor(fieldName string) string {
 
-func (fr Fielder) TableHeaderNameFor(field *structs.Field) string {
-	return fr.LabelFor(field)
-}
+// 	for _, f := range fr.Fields {
+// 		if f.Name() != fieldName {
+// 			continue
+// 		}
 
-func (fr Fielder) ColumnNameFor(fieldName string) string {
+// 		//TODO: handle cases like "-"
+// 		return f.Tag("db")
+// 	}
 
-	for _, f := range fr.Fields {
-		if f.Name() != fieldName {
-			continue
-		}
-
-		//TODO: handle cases like "-"
-		return f.Tag("db")
-	}
-
-	return ""
-}
+// 	return ""
+// }

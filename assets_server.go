@@ -1,87 +1,77 @@
 package admon
 
-import (
-	"encoding/json"
-	"html/template"
-	"path/filepath"
+// var (
+// 	// ManifestPath is the path where the AssetResolver will look for the manifest
+// 	// inside the passed box.
+// 	ManifestPath = "manifest.json"
+// )
 
-	"github.com/gobuffalo/buffalo"
-	"github.com/gobuffalo/buffalo/render"
-	"github.com/gobuffalo/packd"
-)
+// type AssetsServer struct {
+// 	box      packd.Box
+// 	registry stringMap
+// 	prefix   string
+// }
 
-var (
-	// ManifestPath is the path where the AssetResolver will look for the manifest
-	// inside the passed box.
-	ManifestPath = "manifest.json"
-)
+// // NewAssetsServer created a new asset server. It receives a box with the asset files and
+// // the prefix that will be used when returning the file path. This assetPrefix corresponds with
+// // the path where the server should be mounted.
+// func NewAssetsServer(box packd.Box, assetsPrefix string) *AssetsServer {
+// 	return &AssetsServer{
+// 		box:      box,
+// 		registry: stringMap{},
+// 		prefix:   assetsPrefix,
+// 	}
+// }
 
-type AssetsServer struct {
-	box      packd.Box
-	registry stringMap
-	prefix   string
-}
+// func (ar *AssetsServer) AddHelpersTo(engine *render.Engine) {
+// 	engine.Helpers["adminAssetPath"] = ar.helper
+// }
 
-// NewAssetsServer created a new asset server. It receives a box with the asset files and
-// the prefix that will be used when returning the file path. This assetPrefix corresponds with
-// the path where the server should be mounted.
-func NewAssetsServer(box packd.Box, assetsPrefix string) *AssetsServer {
-	return &AssetsServer{
-		box:      box,
-		registry: stringMap{},
-		prefix:   assetsPrefix,
-	}
-}
+// // MountTo updates the Server prefix to base from the app Prefix and serves the assets box.
+// func (ar *AssetsServer) MountTo(app *buffalo.App) {
+// 	routePrefix := ar.prefix
+// 	ar.prefix = filepath.ToSlash(filepath.Join(app.Prefix, ar.prefix))
 
-func (ar *AssetsServer) AddHelpersTo(engine *render.Engine) {
-	engine.Helpers["adminAssetPath"] = ar.helper
-}
+// 	app.ServeFiles(routePrefix, ar.box)
+// }
 
-// MountTo updates the Server prefix to base from the app Prefix and serves the assets box.
-func (ar *AssetsServer) MountTo(app *buffalo.App) {
-	routePrefix := ar.prefix
-	ar.prefix = filepath.ToSlash(filepath.Join(app.Prefix, ar.prefix))
+// func (ar *AssetsServer) helper(originalFile string) (template.HTML, error) {
+// 	return template.HTML(ar.pathFor(originalFile)), nil
+// }
 
-	app.ServeFiles(routePrefix, ar.box)
-}
+// func (ar *AssetsServer) pathFor(file string) string {
+// 	if err := ar.loadManifest(); err != nil {
+// 		return filepath.Join(ar.prefix, file)
+// 	}
 
-func (ar *AssetsServer) helper(originalFile string) (template.HTML, error) {
-	return template.HTML(ar.pathFor(originalFile)), nil
-}
+// 	filePath, ok := ar.registry.Load(file)
+// 	if filePath == "" || !ok {
+// 		filePath = file
+// 	}
 
-func (ar *AssetsServer) pathFor(file string) string {
-	if err := ar.loadManifest(); err != nil {
-		return filepath.Join(ar.prefix, file)
-	}
+// 	path := filepath.ToSlash(filepath.Join(ar.prefix, filePath))
+// 	return path
+// }
 
-	filePath, ok := ar.registry.Load(file)
-	if filePath == "" || !ok {
-		filePath = file
-	}
+// func (ar *AssetsServer) loadManifest() error {
+// 	if len(ar.registry.Keys()) > 0 {
+// 		return nil
+// 	}
 
-	path := filepath.ToSlash(filepath.Join(ar.prefix, filePath))
-	return path
-}
+// 	manifest, err := ar.box.FindString(ManifestPath)
+// 	if err != nil {
+// 		return err
+// 	}
 
-func (ar *AssetsServer) loadManifest() error {
-	if len(ar.registry.Keys()) > 0 {
-		return nil
-	}
+// 	m := map[string]string{}
+// 	err = json.Unmarshal([]byte(manifest), &m)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	manifest, err := ar.box.FindString(ManifestPath)
-	if err != nil {
-		return err
-	}
+// 	for k, v := range m {
+// 		ar.registry.Store(k, v)
+// 	}
 
-	m := map[string]string{}
-	err = json.Unmarshal([]byte(manifest), &m)
-	if err != nil {
-		return err
-	}
-
-	for k, v := range m {
-		ar.registry.Store(k, v)
-	}
-
-	return nil
-}
+// 	return nil
+// }
